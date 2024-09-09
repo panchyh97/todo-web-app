@@ -1,6 +1,6 @@
 export interface ITask {
   name: string;
-  descripcion: string;
+  description: string;
   isCompleted: boolean;
   toggleCompletion?: () => void
 }

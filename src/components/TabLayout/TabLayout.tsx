@@ -6,7 +6,7 @@ interface ITabLayout {
 
 export const TabLayout = ({ children }: ITabLayout) => {
   return (
-    <div className="w-full max-w-lg mx-auto mt-10">
+    <div className="w-full max-w-lg mx-auto mt-2">
       {children}
     </div>
   );

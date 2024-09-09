@@ -1,40 +1,27 @@
 import PlusIcon from '@assets/svg/plus.svg';
 import { ITask, Tab, TabContent, TabLayout, Task } from '@components';
-import { useState } from 'react';
-
-const initialTaskList: ITask[] = [
-  {
-    name: "Tarea 1",
-    descripcion: "Descripción",
-    isCompleted: false
-  },
-  {
-    name: "Tarea 2",
-    descripcion: "Descripción",
-    isCompleted: false
-  },
-  {
-    name: "Tarea 3",
-    descripcion: "Descripción",
-    isCompleted: false
-  },
-  {
-    name: "Tarea 4",
-    descripcion: "Descripción",
-    isCompleted: true
-  },
-];
+import { useEffect, useState } from 'react';
+import { AddTask } from '../components/AddTask';
+import { loadFromLocalStorage } from '../utils/localstorage';
 
 export const Tasks = () => {
-  const [taskList, setTaskList] = useState<ITask[]>(initialTaskList);
+  const [isBottonSheetOpen, setIsBottonSheetOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState('tab1');
+
+  const [tasks, setTasks] = useState<ITask[]>([]);
+
+  useEffect(() => {
+    const storedTasks = loadFromLocalStorage();
+    setTasks(storedTasks);
+  }, []);
+
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
   const toggleTaskCompletion = (taskName: string) => {
-    setTaskList(prevTasks =>
+    setTasks(prevTasks =>
       prevTasks.map(task =>
         task.name === taskName
           ? { ...task, isCompleted: !task.isCompleted }
@@ -44,12 +31,12 @@ export const Tasks = () => {
   };
 
   const todoTasks = () => {
-    const todoTasks = taskList.filter((task) => !task.isCompleted);
-    return todoTasks.map(({ name, descripcion, isCompleted }) => (
+    const todoTasks = tasks.filter((task) => !task.isCompleted);
+    return todoTasks.map(({ name, description, isCompleted }) => (
       <Task
         key={name}
         name={name}
-        descripcion={descripcion}
+        description={description}
         isCompleted={isCompleted}
         toggleCompletion={() => toggleTaskCompletion(name)}
       />
@@ -57,12 +44,12 @@ export const Tasks = () => {
   };
 
   const completedTasks = () => {
-    const completedTasks = taskList.filter((task) => task.isCompleted);
-    return completedTasks.map(({ name, descripcion, isCompleted }) => (
+    const completedTasks = tasks.filter((task) => task.isCompleted);
+    return completedTasks.map(({ name, description, isCompleted }) => (
       <Task
         key={name}
         name={name}
-        descripcion={descripcion}
+        description={description}
         isCompleted={isCompleted}
         toggleCompletion={() => toggleTaskCompletion(name)}
       />
@@ -70,13 +57,14 @@ export const Tasks = () => {
   };
 
   return (
-    <div className='px-4 py-8'>
+    <div className='px-4 py-8 w-full max-w-lg mx-auto mt-10'>
       <div className="flex flex-row justify-between">
         <h1 className="w-fit">Listado de tareas</h1>
         <img
           src={PlusIcon}
           alt="Plus icon"
           className="w-6 h-6 cursor-pointer hover:scale-110 transition-all ease-in-out duration-300"
+          onClick={() => setIsBottonSheetOpen(true)}
         />
       </div>
       <div>
@@ -111,6 +99,7 @@ export const Tasks = () => {
             )}
           </div>
         </TabLayout>
+        <AddTask isBottonSheetOpen={isBottonSheetOpen} setIsBottonSheetOpen={setIsBottonSheetOpen} currentTaskList={tasks} />
       </div>
     </div>
   );
