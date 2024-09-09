@@ -1,5 +1,5 @@
 import { Tasks } from '@features';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, HashRouter as Router, Routes } from 'react-router-dom';
 
 const AppRoutes = () => {
   return (
